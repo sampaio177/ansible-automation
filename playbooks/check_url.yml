@@ -1,0 +1,31 @@
+---
+- name: Verificar disponibilidade de uma URL
+  hosts: servidores
+  gather_facts: no
+
+  vars:
+    target_url: "https://google.com"   # altere aqui ou passe via variável
+    timeout_seconds: 10
+
+  tasks:
+
+    - name: Testar URL via HTTP
+      ansible.builtin.uri:
+        url: "{{ target_url }}"
+        method: GET
+        return_content: no
+        status_code: 200
+        timeout: "{{ timeout_seconds }}"
+        validate_certs: no
+      register: http_result
+      failed_when: false
+      changed_when: false
+
+    - name: Exibir resultado
+      debug:
+        msg: >-
+          {% if http_result.status == 200 %}
+          ✅ Página {{ target_url }} está OK (HTTP 200)
+          {% else %}
+          ❌ Página {{ target_url }} está INDISPONÍVEL (Status: {{ http_result.status | default('sem resposta') }})
+          {% endif %}
