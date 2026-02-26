@@ -1,6 +1,6 @@
 ---
 - name: Verificar disponibilidade de uma URL
-  hosts: servidores
+  hosts: all
   gather_facts: no
 
   vars:
